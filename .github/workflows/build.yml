@@ -5,7 +5,8 @@ on:
     - cron: '15 8 * * *'
   push:
     branches:
-      - main
+      - master
+  workflow_dispatch:
 
 env:
   REGISTRY: docker.io
