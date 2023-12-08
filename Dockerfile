@@ -1,7 +1,12 @@
 FROM nvidia/cuda:12.3.1-base-ubuntu22.04
 
 ARG PORT=8188
+ENV PORT=${PORT}
+
 ENV CUDA_HOME=/usr/local/cuda
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 EXPOSE ${PORT}
 WORKDIR /app
@@ -57,4 +62,4 @@ COPY ./entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
 USER comfyui:comfyui
-ENTRYPOINT ["./entrypoint.sh", "--listen", "--port", "${PORT}"]
+ENTRYPOINT ["./entrypoint.sh"]

@@ -2,11 +2,16 @@
 
 cd /app/ComfyUI
 
-! [ "$(ls -A input)" ] && cp -r ../input/* input/
-! [ "$(ls -A models)" ] && cp -r ../models/* models/
-! [ "$(ls -A web/extensions)" ] && cp -r ../web_extensions/* web/extensions/
+cp -rn ../input/* input/
+cp -rn ../models/* models/
+cp -rn ../web_extensions/* web/extensions/
 
-! [ -f "venv/bin/activate" ] && python3 -m venv venv --system-site-packages
+if ! [ -f "venv/bin/activate" ]; then
+    echo 'Creating virtual environment...'
+    python3 -m venv venv --system-site-packages
+fi
+echo 'Activating virtual environment...'
 source venv/bin/activate
 
-exec python3 main.py "$@"
+set -x
+exec python3 main.py "$@" --listen --port ${PORT:-8188}
