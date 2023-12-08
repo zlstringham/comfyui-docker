@@ -43,7 +43,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=schedule,pattern=nightly-{{date 'YYYYMMDD'}}
-            type=schedule,pattern=latest
+            type=raw,value=latest
             type=raw,value=${{ needs.check.outputs.hash }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
