@@ -3,6 +3,9 @@ name: Docker
 on:
   schedule:
     - cron: '15 8 * * *'
+  push:
+    branches:
+      - main
 
 env:
   REGISTRY: docker.io
@@ -54,7 +57,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          push: true
+          push: false
           labels: ${{ steps.docker_meta.outputs.labels }}
           tags: ${{ steps.docker_meta.outputs.tags }}
           cache-from: type=gha
