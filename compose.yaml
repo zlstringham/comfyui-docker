@@ -9,3 +9,10 @@ services:
               capabilities: [ gpu ]
     ports:
       - "8188:8188"
+    volumes:
+      - ./services/comfyui/custom_nodes:/app/ComfyUI/custom_nodes
+      - ./services/comfyui/input:/app/ComfyUI/input
+      - ./services/comfyui/models:/app/ComfyUI/models
+      - ./services/comfyui/output:/app/ComfyUI/output
+      - ./services/comfyui/venv:/app/ComfyUI/venv
+      - ./services/comfyui/web/extensions:/app/ComfyUI/web/extensions

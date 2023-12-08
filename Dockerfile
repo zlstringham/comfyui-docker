@@ -27,10 +27,26 @@ USER comfyui:comfyui
 ENV PATH="/app/.local/bin:${PATH}"
 RUN --mount=type=cache,uid=1000,gid=1000,target=/app/.cache/pip,sharing=locked <<EOT
     set -ex
-    git clone https://github.com/comfyanonymous/ComfyUI.git
+    git clone https://github.com/comfyanonymous/ComfyUI.git    
     pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121
     pip install -r ComfyUI/requirements.txt
+
+    mv ComfyUI/input input
+    mv ComfyUI/models models
+    mv ComfyUI/web/extensions web_extensions
+    
+    mkdir -p ComfyUI/input
+    mkdir -p ComfyUI/models
+    mkdir -p ComfyUI/web/extensions
+    mkdir -p ComfyUI/venv
 EOT
+
+VOLUME /app/ComfyUI/custom_nodes
+VOLUME /app/ComfyUI/input
+VOLUME /app/ComfyUI/models
+VOLUME /app/ComfyUI/output
+VOLUME /app/ComfyUI/venv
+VOLUME /app/ComfyUI/web/extensions
 
 USER root
 COPY ./entrypoint.sh .
