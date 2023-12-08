@@ -9,6 +9,7 @@ services:
               capabilities: [ gpu ]
     ports:
       - "8188:8188"
+    stop_signal: SIGINT
     volumes:
       - ./services/comfyui/custom_nodes:/app/ComfyUI/custom_nodes
       - ./services/comfyui/input:/app/ComfyUI/input
