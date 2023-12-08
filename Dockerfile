@@ -1,8 +1,9 @@
 FROM nvidia/cuda:12.3.1-base-ubuntu22.04
 
+ARG PORT=8188
 ENV CUDA_HOME=/usr/local/cuda
 
-EXPOSE 8188
+EXPOSE ${PORT}
 WORKDIR /app
 
 # https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md#example-cache-apt-packages
@@ -13,6 +14,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     set -ex
     apt-get update
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        curl \
         git \
         python3 \
         python3-pip \
@@ -48,9 +50,11 @@ VOLUME /app/ComfyUI/output
 VOLUME /app/ComfyUI/venv
 VOLUME /app/ComfyUI/web/extensions
 
+HEALTHCHECK CMD curl -f http://localhost:${PORT} || exit 1
+
 USER root
 COPY ./entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
 USER comfyui:comfyui
-ENTRYPOINT ["./entrypoint.sh", "--listen"]
+ENTRYPOINT ["./entrypoint.sh", "--listen", "--port", "${PORT}"]
