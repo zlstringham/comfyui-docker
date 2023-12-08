@@ -1,0 +1,61 @@
+name: Docker
+
+on:
+  schedule:
+    - cron: '15 8 * * *'
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: zlstringham/comfyui
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      hash: ${{ steps.comfyui_hash.outputs.hash }}
+      outcome: ${{ steps.image_exists.outcome }}
+    steps:
+      - name: ComfyUI Hash
+        id: comfyui_hash
+        run: |
+          echo "hash=$(git ls-remote https://github.com/comfyanonymous/ComfyUI.git | head -c7)" >> "$GITHUB_OUTPUT"
+      - name: Check if image exists
+        id: image_exists
+        uses: cloudposse/github-action-docker-image-exists@main
+        continue-on-error: true
+        with:
+          registry: registry.hub.docker.com
+          image_name: "${{ env.IMAGE_NAME }}"
+          tag: "${{ steps.comfyui_hash.outputs.hash }}"
+          login: "${{ secrets.DOCKERHUB_USERNAME }}"
+          password: "${{ secrets.DOCKERHUB_TOKEN }}"
+    
+  build:
+    runs-on: ubuntu-latest
+    needs: check
+    if: needs.check.outputs.outcome != 'success'
+    steps:
+      - name: Docker metadata
+        id: docker_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=schedule,pattern=nightly-{{date 'YYYYMMDD'}}
+          type=schedule,pattern=latest
+          type=raw,value=${{ needs.check.outputs.hash }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          labels: ${{ steps.docker_meta.outputs.labels }}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
