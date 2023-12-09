@@ -34,7 +34,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: check
-    if: needs.check.outputs.outcome != 'success'
+    if: ${{ github.event_name == 'workflow_dispatch' }} || needs.check.outputs.outcome != 'success'
     steps:
       - name: Docker metadata
         id: docker_meta
