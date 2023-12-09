@@ -20,6 +20,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get update
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
         curl \
+        ffmpeg \
         git \
         python3 \
         python3-pip \
