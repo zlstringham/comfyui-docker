@@ -60,7 +60,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           build-args: |
-            GIT_CLONE_CACHE=${{ needs.checkout.outputs.hash }}
+            GIT_CLONE_CACHE=${{ needs.check.outputs.hash }}
           labels: ${{ steps.docker_meta.outputs.labels }}
           tags: ${{ steps.docker_meta.outputs.tags }}
           cache-from: type=gha
