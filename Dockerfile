@@ -60,9 +60,5 @@ VOLUME /app/ComfyUI/web/extensions
 
 HEALTHCHECK CMD curl -f http://localhost:${PORT} || exit 1
 
-USER root
-COPY ./entrypoint.sh .
-RUN chmod +x entrypoint.sh
-
-USER comfyui:comfyui
+COPY --chmod=777 ./entrypoint.sh .
 ENTRYPOINT ["./entrypoint.sh"]
