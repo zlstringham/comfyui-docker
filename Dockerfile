@@ -61,7 +61,5 @@ VOLUME /app/ComfyUI/output
 VOLUME /app/ComfyUI/venv
 VOLUME /app/ComfyUI/web/extensions
 
-HEALTHCHECK CMD curl -f http://localhost:${PORT} || exit 1
-
 COPY --chmod=775 --chown=comfyui:comfyui ./entrypoint.sh .
 ENTRYPOINT ["./entrypoint.sh"]
