@@ -33,11 +33,11 @@ EOT
 
 USER comfyui:comfyui
 ENV PATH="/app/.local/bin:${PATH}"
-# Invalidate cache if latest commit changes
-ADD "https://api.github.com/repos/comfyanonymous/ComfyUI/commits?per_page=1" latest_commit
+
+# Arg to invalidate cached git clone step
+ARG GIT_CLONE_CACHE
 RUN --mount=type=cache,uid=1000,gid=1000,target=/app/.cache/pip,sharing=locked <<EOT
     set -ex
-    rm latest_commit
     git clone https://github.com/comfyanonymous/ComfyUI.git    
     pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121
     pip install -r ComfyUI/requirements.txt
