@@ -15,8 +15,7 @@ WORKDIR /app
 # https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md#example-cache-apt-packages
 RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
     echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-${TARGETPLATFORM} \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked,id=apt-lib-${TARGETPLATFORM} <<EOT
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-${TARGETPLATFORM} <<EOT
     set -ex
     apt-get update
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -27,6 +26,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-${TARGETPLATF
         python3-opencv \
         python3-pip \
         python3-venv
+    rm -rf /var/lib/apt/lists/*
 
     groupadd -g 1000 comfyui
     useradd -d /app -u 1000 -g comfyui comfyui
