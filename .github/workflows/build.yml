@@ -27,9 +27,9 @@ jobs:
         with:
           registry: registry.hub.docker.com
           image_name: "${{ env.IMAGE_NAME }}"
-          tag: "${{ steps.comfyui_hash.outputs.hash }}"
-          login: "${{ secrets.DOCKERHUB_USERNAME }}"
-          password: "${{ secrets.DOCKERHUB_TOKEN }}"
+          tag: sha-${{ steps.comfyui_hash.outputs.hash }}
+          login: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
     
   build:
     runs-on: ubuntu-latest
@@ -43,7 +43,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=schedule,pattern=nightly-{{date 'YYYYMMDD'}}
-            type=raw,value=${{ needs.check.outputs.hash }}
+            type=raw,value=sha-${{ needs.check.outputs.hash }}
             type=raw,value=latest
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
