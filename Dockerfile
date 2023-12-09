@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.3.1-base-ubuntu22.04
+FROM nvidia/cuda:12.3.1-devel-ubuntu22.04
 
 ARG PORT=8188
 ENV PORT=${PORT}
@@ -60,5 +60,5 @@ VOLUME /app/ComfyUI/web/extensions
 
 HEALTHCHECK CMD curl -f http://localhost:${PORT} || exit 1
 
-COPY --chmod=777 ./entrypoint.sh .
+COPY --chmod=775 --chown=comfyui:comfyui ./entrypoint.sh .
 ENTRYPOINT ["./entrypoint.sh"]
