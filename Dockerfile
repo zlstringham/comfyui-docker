@@ -46,6 +46,7 @@ RUN --mount=type=cache,uid=1000,gid=1000,target=/app/.cache/pip,sharing=locked,i
     set -ex
     git clone --depth 1 https://github.com/comfyanonymous/ComfyUI.git
     pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121
+    pip install xformers
     pip install -r ComfyUI/requirements.txt
 
     mv ComfyUI/input input
