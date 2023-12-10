@@ -25,6 +25,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-${TARGETPLATF
         libglib2.0-0 \
         libnuma1 \
         libnuma-dev \
+        libsm6 \
         libtool \
         libxext6 \
         libxrender1 \
