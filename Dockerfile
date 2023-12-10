@@ -26,8 +26,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-${TARGETPLATF
         libnuma1 \
         libnuma-dev \
         libtool \
-        libxrender1 \
         libxext6 \
+        libxrender1 \
         pkg-config \
         python3 \
         python3-dev \
