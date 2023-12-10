@@ -30,7 +30,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-${TARGETPLATF
         libxext6 \
         python3 \
         python3-dev \
-        python3-opencv \
         python3-packaging \
         python3-pip \
         python3-venv \
