@@ -28,6 +28,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-${TARGETPLATF
         libtool \
         libxrender1 \
         libxext6 \
+        pkg-config \
         python3 \
         python3-dev \
         python3-packaging \
