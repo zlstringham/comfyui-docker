@@ -19,8 +19,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-${TARGETPLATF
         curl \
         ffmpeg \
         git \
-        libgl1 \
+        libgl1-mesa-dev \
         libglib2.0-0 \
+        libxrender1 \
+        libxext6 \
         python3 \
         python3-opencv \
         python3-packaging \
