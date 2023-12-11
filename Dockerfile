@@ -1,5 +1,4 @@
 FROM nvidia/cuda:12.1.0-devel-ubuntu22.04
-ARG TARGETPLATFORM
 
 ENV CUDA_HOME=/usr/local/cuda
 
@@ -11,10 +10,11 @@ WORKDIR /app
 # https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md#example-cache-apt-packages
 RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
     echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-${TARGETPLATFORM} <<EOT
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked <<EOT
     set -ex
     apt-get update
     DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends install -y \
+        apt-utils \
         build-essential \
         cmake \
         curl \
@@ -39,8 +39,14 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-${TARGETPLATF
         yasm
     rm -rf /var/lib/apt/lists/*
 
-    # Install ffmpeg from source
-    # https://docs.nvidia.com/video-technologies/video-codec-sdk/12.1/ffmpeg-with-nvidia-gpu/index.html
+    groupadd -g 1000 comfyui
+    useradd -d /app -u 1000 -g comfyui comfyui
+    chown -R comfyui:comfyui /app
+EOT
+
+# Install ffmpeg from source
+# https://docs.nvidia.com/video-technologies/video-codec-sdk/12.1/ffmpeg-with-nvidia-gpu/index.html
+RUN <<EOT
     git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git
     cd nv-codec-headers && make install && cd -
     git clone https://git.ffmpeg.org/ffmpeg.git
@@ -50,10 +56,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=apt-${TARGETPLATF
         --disable-static --enable-shared
     make -j$(nproc) && make install && cd -
     rm -rf nv-codec-headers ffmpeg
-
-    groupadd -g 1000 comfyui
-    useradd -d /app -u 1000 -g comfyui comfyui
-    chown -R comfyui:comfyui /app
 EOT
 
 USER comfyui:comfyui
@@ -61,7 +63,7 @@ ENV PATH="/app/.local/bin:${PATH}"
 
 # Arg to invalidate cached git clone step
 ARG GIT_CLONE_CACHE
-RUN --mount=type=cache,uid=1000,gid=1000,target=/app/.cache/pip,sharing=locked,id=pip-${TARGETPLATFORM} <<EOT
+RUN --mount=type=cache,uid=1000,gid=1000,target=/app/.cache/pip,sharing=locked <<EOT
     set -ex
     git clone --depth 1 https://github.com/comfyanonymous/ComfyUI.git
     pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121
